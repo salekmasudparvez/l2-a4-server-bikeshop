@@ -1,87 +1,73 @@
-import httpStatus from 'http-status';
-import config from '../../config';
-import AppError from '../../errors/AppError';
+import { Request, Response } from 'express';
 import catchAsync from '../../utils/catchAsync';
+import { authService } from './auth.service';
 import sendResponse from '../../utils/sendResponse';
-import { AuthServices } from './auth.service';
+import StatusCodes from 'http-status-codes';
+import config from '../../config';
 
-const loginUser = catchAsync(async (req, res) => {
-  const result = await AuthServices.loginUser(req.body);
-  const { refreshToken, accessToken, needsPasswordChange } = result;
+const signup = catchAsync(async (req: Request, res: Response) => {
+  const getDoc = req.body;
+  const payload ={
+    ...getDoc,
+    isBlocked:false,
+    isActive:true,
+    role:'customer',
+    photoURL:"https://img.freepik.com/free-vector/illustration-businessman_53876-5856.jpg"
 
+  }
+  
+  const result = await authService.signupFunc(payload);
+  sendResponse(res, {
+    success: true,
+    message: 'User sign up successfully',
+    data: {
+      name: result.name,
+      email: result.email,
+    },
+    statusCode: StatusCodes.ACCEPTED,
+  });
+});
+const login = catchAsync(async (req: Request, res: Response) => {
+  const result = await authService.loginFunc(req.body);
+  const { accessToken, refreshToken } = result;
   res.cookie('refreshToken', refreshToken, {
     secure: config.NODE_ENV === 'production',
     httpOnly: true,
     sameSite: 'none',
     maxAge: 1000 * 60 * 60 * 24 * 365,
   });
-
   sendResponse(res, {
-    statusCode: httpStatus.OK,
     success: true,
-    message: 'User is logged in succesfully!',
+    message: 'User logged in successfully',
     data: {
       accessToken,
-      needsPasswordChange,
+      user:result?.userInfo
     },
+    statusCode: StatusCodes.OK,
   });
 });
-
-const changePassword = catchAsync(async (req, res) => {
-  const { ...passwordData } = req.body;
-
-  const result = await AuthServices.changePassword(req.user, passwordData);
+const getAllUsers =catchAsync(async (req: Request, res: Response) => {
+  const result = await authService.getAllUsersFunc();
   sendResponse(res, {
-    statusCode: httpStatus.OK,
     success: true,
-    message: 'Password is updated succesfully!',
+    message: 'All users fetched successfully',
     data: result,
+    statusCode: StatusCodes.OK,
   });
-});
-
-const refreshToken = catchAsync(async (req, res) => {
-  const { refreshToken } = req.cookies;
-  const result = await AuthServices.refreshToken(refreshToken);
-
+})
+const status = catchAsync(async (req: Request, res: Response) => {
+  
+  const result = await authService.statusFuc(req?.body);
   sendResponse(res, {
-    statusCode: httpStatus.OK,
     success: true,
-    message: 'Access token is retrieved succesfully!',
+    message: 'Updated user status ',
     data: result,
+    statusCode: StatusCodes.OK,
   });
-});
-
-const forgetPassword = catchAsync(async (req, res) => {
-  const userId = req.body.id;
-  const result = await AuthServices.forgetPassword(userId);
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: 'Reset link is generated succesfully!',
-    data: result,
-  });
-});
-
-const resetPassword = catchAsync(async (req, res) => {
-  const token = req.headers.authorization;
-
-  if (!token) {
-    throw new AppError(httpStatus.BAD_REQUEST, 'Something went wrong !');
-  }
-
-  const result = await AuthServices.resetPassword(req.body, token);
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: 'Password reset succesfully!',
-    data: result,
-  });
-});
-
-export const AuthControllers = {
-  loginUser,
-  changePassword,
-  refreshToken,
-  forgetPassword,
-  resetPassword,
+})
+export const authController = {
+  signup,
+  login,
+  getAllUsers,
+  status
 };

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { UploadApiResponse, v2 as cloudinary } from 'cloudinary';
 import fs from 'fs';
 import multer from 'multer';
@@ -37,6 +38,7 @@ export const sendImageToCloudinary = (
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
+    
     cb(null, process.cwd() + '/uploads/');
   },
   filename: function (req, file, cb) {
