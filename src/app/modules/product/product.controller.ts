@@ -22,8 +22,7 @@ const productCreate = catchAsync(async (req: Request, res: Response) => {
 const productUpdate = catchAsync(async (req: Request, res: Response) => {
   const data = req.body;
   const updateDoc = JSON.parse(data.data);
-  // eslint-disable-next-line no-console
-  console.log(updateDoc);
+
   const result = await productService.productUpdateFunc({
     payload: updateDoc,
     file: data?.file,
@@ -37,7 +36,7 @@ const productUpdate = catchAsync(async (req: Request, res: Response) => {
 });
 const updateAvailable =catchAsync(async (req: Request, res: Response) => {
   const id = req.params.id;
-  console.log(id)
+
   const result = await productService.updateAvailableFunc(id);
   sendResponse(res, {
     success: true,
@@ -56,6 +55,18 @@ const getAllProducts = catchAsync(async (req: Request, res: Response) => {
     statusCode: StatusCodes.OK,
   });
 });
+const getAllCateAndBrand = catchAsync(async (req: Request, res: Response) => {
+    console.log('click')
+  const result = await productService.getAllCateAndBrandFunc();
+  sendResponse(res, {
+    success: true,
+    message: 'Category fetched successfully ',
+    data: result,
+    statusCode: StatusCodes.OK,
+  });
+});
+
+
 const getSingleProduct = catchAsync(async (req: Request, res: Response) => {
   const params = req.params.id;
   const result = await productService.getSingleProductFunc(params);
@@ -84,5 +95,7 @@ export const productController = {
   getSingleProduct,
   deleteProduct,
   getAllProducts,
-  updateAvailable
+  updateAvailable,
+  getAllCateAndBrand,
+
 };

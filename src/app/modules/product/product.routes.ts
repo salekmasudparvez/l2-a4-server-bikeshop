@@ -16,5 +16,6 @@ productRouter.patch('/available/:id', verifyAdmin, productController.updateAvail
 productRouter.delete('/delete/:id', verifyAdmin, productController.deleteProduct);
 productRouter.get('/get', productController.getAllProducts);
 productRouter.get('/get/:id', productController.getSingleProduct);
+productRouter.get('/category-and-brand', productController.getAllCateAndBrand);
 
 export default productRouter;

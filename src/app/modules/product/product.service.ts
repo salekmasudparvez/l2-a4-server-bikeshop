@@ -6,7 +6,7 @@ import { StatusCodes } from 'http-status-codes';
 import AppError from '../../errors/AppError';
 
 interface TProductCreate {
-  data:{
+  data: {
     productName: string;
     price: number;
     category: string;
@@ -15,12 +15,12 @@ interface TProductCreate {
     description: string;
     photoURL?: string;
     productId?: string;
-  
+
   };
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  file:any
+
+  file: any
 }
-const productCreateFunc = async (payload:TProductCreate) => {
+const productCreateFunc = async (payload: TProductCreate) => {
   const userData = payload?.data;
 
   const session = await mongoose.startSession();
@@ -65,7 +65,7 @@ const productCreateFunc = async (payload:TProductCreate) => {
     throw new Error('Failed to create product for error');
   }
 };
-interface TProductUpdate{
+interface TProductUpdate {
   payload: {
     productName: string;
     price: number;
@@ -136,13 +136,11 @@ const updateAvailableFunc = async (id: string) => {
   }
   const res = await Product.findByIdAndUpdate(
     id,
-    { isAvailable: !product.isAvailable }, 
+    { isAvailable: !product.isAvailable },
     { new: true }
   );
   return res
 };
-
-
 interface TQuery {
   search?: string;
   minPrice?: number;
@@ -150,10 +148,11 @@ interface TQuery {
   model?: string;
   brand?: string;
   limit?: number;
+  isAvailable?: boolean;
 }
 
 const getAllProductsFunc = async (queries: TQuery) => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const query: Record<string, any> = {};
 
   // Add search query if available
@@ -173,12 +172,17 @@ const getAllProductsFunc = async (queries: TQuery) => {
     };
   }
 
-  if (queries.model) {
-    query.model = queries.model;
+  if (queries?.model) {
+    query.model = { $regex: queries?.model, $options: 'i' }
   }
 
   if (queries.brand) {
-    query.brand = queries.brand;
+    query.brand =  { $regex: queries?.brand, $options: 'i' }
+  }
+
+  if(queries?.isAvailable){
+    
+    query.isAvailable = queries?.isAvailable;
   }
   let limit;
   if (queries?.limit) {
@@ -194,6 +198,26 @@ const getSingleProductFunc = async (params: string) => {
 const deleteProductFunc = async (id: string) => {
   return await Product.findByIdAndDelete(id);
 };
+const getAllCateAndBrandFunc = async () => {
+  return await Product.aggregate([
+    {
+      $group: {
+        _id: null,
+        brands: { $addToSet: "$brand" },
+        categories: { $addToSet: "$model" }
+      }
+    },
+    {
+      $project: {
+        _id: 0,
+        brands: 1,
+        categories: 1
+      }
+    }
+  ]);
+
+}
+
 
 export const productService = {
   productCreateFunc,
@@ -201,5 +225,7 @@ export const productService = {
   getSingleProductFunc,
   deleteProductFunc,
   getAllProductsFunc,
-  updateAvailableFunc
+  updateAvailableFunc,
+  getAllCateAndBrandFunc,
+
 };

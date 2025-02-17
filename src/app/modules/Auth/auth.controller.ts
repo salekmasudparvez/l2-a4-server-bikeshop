@@ -29,6 +29,7 @@ const signup = catchAsync(async (req: Request, res: Response) => {
 });
 const login = catchAsync(async (req: Request, res: Response) => {
   const result = await authService.loginFunc(req.body);
+  
   const { accessToken, refreshToken } = result;
   res.cookie('refreshToken', refreshToken, {
     secure: config.NODE_ENV === 'production',
@@ -65,9 +66,48 @@ const status = catchAsync(async (req: Request, res: Response) => {
     statusCode: StatusCodes.OK,
   });
 })
+const updatePassword = catchAsync(async (req: Request, res: Response) => {
+  
+  const getUpdateInfo = req.body;
+  const result = await authService.updatePasswordFunc(getUpdateInfo);
+  sendResponse(res, {
+    success: true,
+    message: 'Updated user password ',
+    data: result,
+    statusCode: StatusCodes.OK,
+  });
+})
+const getSingleUser = catchAsync(async (req: Request, res: Response) => {
+  const getUserInfo = req.params.email;
+  const result = await authService.getSingleUserFunc(getUserInfo);
+  sendResponse(res, {
+    success: true,
+    message: 'Updated user profile ',
+    data: result,
+    statusCode: StatusCodes.OK,
+  });
+});
+const updateName= catchAsync(async (req: Request, res: Response) => {
+  const getUserInfo = req.body;
+
+  const result = await authService.updateNameFunc({
+    name:getUserInfo?.name,
+    email:getUserInfo?.email
+  } );
+  sendResponse(res, {
+    success: true,
+    message: 'Updated user profile ',
+    data: result,
+    statusCode: StatusCodes.OK,
+  });
+});
+
 export const authController = {
   signup,
   login,
   getAllUsers,
-  status
+  status,
+  updatePassword,
+  getSingleUser,
+  updateName
 };

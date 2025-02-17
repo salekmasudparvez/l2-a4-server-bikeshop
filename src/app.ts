@@ -6,6 +6,7 @@ import globalErrorHandler from './app/middlewares/globalErrorhandler';
 import notFound from './app/middlewares/notFound';
 import authRouter from './app/modules/auth/auth.routes';
 import productRouter from './app/modules/product/product.routes';
+import orderRoutes from './app/modules/order/order.routes';
 
 
 const app: Application = express();
@@ -14,11 +15,12 @@ const app: Application = express();
 app.use(express.json());
 app.use(cookieParser());
 
-app.use(cors({ origin: ['http://localhost:5173','http://localhost:5000'], credentials: true }));
+app.use(cors({ origin: ['http://localhost:5173','http://localhost:5001','http://localhost:5175'], credentials: true }));
 
 // application routes
 app.use('/api/auth',authRouter);
 app.use('/api/product',productRouter);
+app.use('/api/order',orderRoutes);
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Server is running !');
