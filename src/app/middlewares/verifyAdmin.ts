@@ -10,7 +10,7 @@ const verifyAdmin =  catchAsync(async (req: Request, res: Response, next: NextFu
     const bearerToken = req.headers.authorization;
    
     const token = bearerToken?.split(" ")[1];
-    console.log('token', bearerToken);
+    
     if (!token) {
       throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized!');
     }

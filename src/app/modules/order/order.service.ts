@@ -10,7 +10,7 @@ const stripe = new Stripe(config.STRIPE_SECRET_KEY as string);
 
 const placeOrderFunc = async (payload: any) => {
     const session = await mongoose.startSession();
-
+  
     try {
         session.startTransaction();
         const totalPrice = Number(payload?.price) * Number(payload?.quantity);
@@ -42,7 +42,6 @@ const placeOrderFunc = async (payload: any) => {
                 role: payload?.userInfo?.role,
             },
             orderId: paymentIntent?.id,
-            deliveryStatus: "pending",
             orderTrack: [
                 { title: "Pending", description: "Your order is in pending." },
                 { title: "Processing", description: "Your order has processed." },
@@ -52,7 +51,7 @@ const placeOrderFunc = async (payload: any) => {
             orderActiveTrack: 1,
         };
 
-        console.log(orderProduct)
+      
         const res = await Order.create([orderProduct], { session });
 
         if (!res) {
@@ -65,10 +64,10 @@ const placeOrderFunc = async (payload: any) => {
 
         return paymentIntent;
     } catch (error) {
-
+          
         await session.abortTransaction();
         session.endSession();
-        // console.log(error)
+       
         throw new AppError(StatusCodes.BAD_REQUEST, "Failed to pay");
     }
 };

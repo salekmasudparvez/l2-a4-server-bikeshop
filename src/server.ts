@@ -1,43 +1,21 @@
-import { Server } from 'http';
 import mongoose from 'mongoose';
 import app from './app';
 import config from './app/config';
+import { Request, Response } from 'express';
 
-let server: Server;
-
-async function main() {
+async function connectDatabase() {
   try {
     await mongoose.connect(config.database_url as string);
-    server = app.listen(config.port, () => {
-      console.log(`app is listening on port ${config.port}`);
-    });
+    app.listen(config.port, () => {
+      console.log(`Server running on port ${config.port} 🏃🏽‍♂️‍➡️`)
+    })
   } catch (err) {
-    console.log(err);
+    console.error(`❌ Database Connection Error:`, err);
   }
 }
 
-main();
+connectDatabase();
 
-process.on('unhandledRejection', (err) => {
-  try {
-     console.log(`😈 unahandledRejection is detected , shutting down ...`, err);
-  if (server) {
-    server.close(() => {
-      process.exit(1);
-    });
-  }
-  process.exit(1);
-  } catch (error) {
-   console.log('😈 unahandledRejection Error:',error) 
-  }
- 
-});
-
-process.on('uncaughtException', () => {
- try {
-  console.log(`😈 uncaughtException is detected , shutting down ...`);
-  process.exit(1);
- } catch (error) {
-  console.log('😈 unahandledRejectionError:',error)
- }
-});
+export default function handler(req: Request, res: Response) {
+  return app(req, res);
+}

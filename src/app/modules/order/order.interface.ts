@@ -11,7 +11,6 @@ export interface TOrder extends Document {
         role:'customer';
     };
     orderId:string;
-    deliveryStatus:"pending"|"success"|"failed";
     orderTrack:[{
         title:string;
         description:string;

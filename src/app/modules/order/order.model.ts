@@ -16,11 +16,6 @@ const orderSchema = new Schema<TOrder>(
             required: true,
         },
         orderId: { type: String, required: true }, 
-        deliveryStatus: {
-            type: String,
-            enum: ["Pending", "Processing", "Shipped","Delivered"],
-            default: "pending",
-        },
         orderTrack: [
             {
                 title: { type: String, required: true },

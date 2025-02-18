@@ -1,21 +1,79 @@
-### Requirement Analysis
-
-[Link to Requirement Analysis Document](https://docs.google.com/document/d/10mkjS8boCQzW4xpsESyzwCCLJcM3hvLghyD_TeXPBx0/edit?usp=sharing)
-
-Description: This document outlines the detailed analysis of project requirements.
-
 ---
 
-### Entity-Relationship Diagrams
+# Gear Rush || Bike Shop Server side
 
-![ER DIAGRAM](./erdiagram.png)
+Gear Rush is an online motorcycle shop where users can order their favorite bikes and make payments. The platform includes a dashboard for both admins and customers.
 
-Description: This is an updated diagram illustrates the relationships among User, Student, Admin, Faculty, Academic Semester, Academic Faculty, Academic Department , Course , Semester Registration , Offered Couse.
+In this project, I have used MongoDB with Mongoose, Express js, Node js, TypeScript, Stripe.
 
----
 
-![POSTMAN COLLECTION](./postman_collection.json)
+## Features
 
-Description: This is a postman collection of all the API endpoints.Download this , and import it in your postman if you needed.
+- **Customer Management**:
 
----
+  - Customer can register and login.
+  - Customer can order bike.
+  - Customer can see order track .
+  - Customer can give reviews .
+
+- **Admin Management**:
+
+  - Admin can add bike as product.
+  - Admin can delete any a bike post .
+  - Admin can update any post .
+  - Admin can manage users like block them or deactived them.
+
+
+
+
+## Installation
+
+### Prerequisites
+
+- Node.js
+- MongoDB (or a MongoDB cloud service like Atlas)
+
+### Steps
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/salekmasudparvez/l2-a4-server-bikeshop.git
+   ```
+
+2. Navigate to the project folder:
+
+   ```bash
+   cd l2-a4-server-bikeshop.git
+   ```
+
+3. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+4. Set up your **MongoDB** connection in the `app.ts` file (or use a service like MongoDB Atlas):
+
+   ```typescript
+   mongoose.connect('mongodb://localhost:27017/api/blogs')
+   ```
+
+5. Run the application:
+
+- Manage All environments variables from [.env.example](https://github.com/salekmasudparvez/l2-a4-server-bikeshop/blob/main/.env.example) file
+  
+6. Run the application:
+
+   ```bash
+   npm run dev
+   ```
+
+   The app will start on **http://localhost:5000**.
+
+## Live Server
+
+You can view the live version of the project here:
+
+[Live Server](https://gearrush.vercel.app/)
+

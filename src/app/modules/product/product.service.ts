@@ -1,7 +1,7 @@
 import { Product } from './product.model';
 import { sendImageToCloudinary } from '../../utils/sendImageToCloudinary';
 import mongoose from 'mongoose';
-import { customAlphabet } from 'nanoid';
+
 import { StatusCodes } from 'http-status-codes';
 import AppError from '../../errors/AppError';
 
@@ -24,7 +24,7 @@ const productCreateFunc = async (payload: TProductCreate) => {
   const userData = payload?.data;
 
   const session = await mongoose.startSession();
-
+  const { customAlphabet } = await import('nanoid');
   const numericAlphabet = '0123456789';
   const nanoid = customAlphabet(numericAlphabet, 5);
   const productId = nanoid();

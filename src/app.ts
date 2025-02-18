@@ -15,7 +15,7 @@ const app: Application = express();
 app.use(express.json());
 app.use(cookieParser());
 
-app.use(cors({ origin: ['http://localhost:5173','http://localhost:5001','http://localhost:5175'], credentials: true }));
+app.use(cors({ origin: ['http://localhost:5173','http://localhost:5000','http://localhost:5175','https://gearrush.vercel.app','https://gearrush.netlify.app'], credentials: true }));
 
 // application routes
 app.use('/api/auth',authRouter);

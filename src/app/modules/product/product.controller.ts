@@ -56,7 +56,7 @@ const getAllProducts = catchAsync(async (req: Request, res: Response) => {
   });
 });
 const getAllCateAndBrand = catchAsync(async (req: Request, res: Response) => {
-    console.log('click')
+  
   const result = await productService.getAllCateAndBrandFunc();
   sendResponse(res, {
     success: true,
@@ -79,7 +79,7 @@ const getSingleProduct = catchAsync(async (req: Request, res: Response) => {
 });
 const deleteProduct = catchAsync(async (req: Request, res: Response) => {
   const id  = req.params.id;
-  console.log(id)
+
   const result = await productService.deleteProductFunc(id);
   sendResponse(res, {
     success: true,
