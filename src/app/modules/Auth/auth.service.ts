@@ -12,47 +12,61 @@ const signupFunc = async (registraionDoc: IUserCreate) => {
   const res = await Signup.create(registraionDoc);
   return res;
 };
+
 const loginFunc = async (payload: TLoginUser) => {
-  const user = await Signup.findOne({ email: payload?.email });
+  const session = await mongoose.startSession(); 
+  session.startTransaction();
 
-  if (!user) {
-    throw new AppError(StatusCodes.NOT_FOUND, 'User not found😒');
-  }
-  const isBlocked = user?.isBlocked;
-  if (isBlocked) {
-    throw new AppError(StatusCodes.FORBIDDEN, 'User is blocked 🤡');
-  }
-  if (!(await Signup.isPasswordMatched(payload?.password, user?.password))) {
-    throw new AppError(StatusCodes.UNAUTHORIZED, 'Incorrect Password😵‍💫');
-  }
+  try {
+    const user = await Signup.findOne({ email: payload?.email }).session(session);
 
-  const jwtPayload = {
-    email: user?.email,
-    role: user?.role,
-  };
+    if (!user) {
+      throw new AppError(StatusCodes.NOT_FOUND, 'User not found😒');
+    }
+    if (user?.isBlocked) {
+      throw new AppError(StatusCodes.FORBIDDEN, 'User is blocked 🤡');
+    }
+    if (!(await Signup.isPasswordMatched(payload?.password, user?.password))) {
+      throw new AppError(StatusCodes.UNAUTHORIZED, 'Incorrect Password😵‍💫');
+    }
 
-  const accessToken = generateToken(
-    jwtPayload,
-    config.jwt_access_secret as string,
-    config.jwt_access_expires_in as string,
-  );
-
-  const refreshToken = generateToken(
-    jwtPayload,
-    config.jwt_refresh_secret as string,
-    config.jwt_refresh_expires_in as string,
-  );
-  return {
-    accessToken,
-    refreshToken,
-    userInfo: {
-      name: user?.name,
+    const jwtPayload = {
       email: user?.email,
       role: user?.role,
-      photoURL: user?.photoURL
-    },
-  };
+    };
+
+    const accessToken = generateToken(
+      jwtPayload,
+      config.jwt_access_secret as string,
+      config.jwt_access_expires_in as string
+    );
+
+    const refreshToken = generateToken(
+      jwtPayload,
+      config.jwt_refresh_secret as string,
+      config.jwt_refresh_expires_in as string
+    );
+
+    await session.commitTransaction();
+    session.endSession();
+
+    return {
+      accessToken,
+      refreshToken,
+      userInfo: {
+        name: user?.name,
+        email: user?.email,
+        role: user?.role,
+        photoURL: user?.photoURL,
+      },
+    };
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    throw error;
+  }
 };
+
 const getAllUsersFunc = async () => {
   const users = await Signup.find();
   return users;

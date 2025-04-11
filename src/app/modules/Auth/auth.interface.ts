@@ -5,9 +5,8 @@ export interface IUserCreate extends Document {
   name: string;
   email: string;
   password: string;
-  role: 'admin' | 'customer';
+  role: 'admin' | 'user';
   isBlocked: boolean;
-  isActive: boolean;
   photoURL: string;
 }
 export interface TLogin extends Model<IUserCreate> {
@@ -23,5 +22,5 @@ export type TLoginUser = {
   };
   export interface TJwtPayload {
     email:string;
-    role:"admin" | "customer";
+    role:"admin" | "user";
   }

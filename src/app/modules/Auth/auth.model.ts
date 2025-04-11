@@ -1,22 +1,24 @@
 import bcrypt from 'bcrypt';
-import { Schema, model } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import { IUserCreate, TLogin } from './auth.interface';
 import config from '../../config';
 
+
+const portfolioDB = mongoose.connection.useDb(config.database_name as string);
+
 const signUpSchema = new Schema<IUserCreate, TLogin>(
   {
-    name: { type: String, required: true, trim: true },
+    name: { type: String, required: true,  },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    role: { type: String, enum: ['admin', 'customer'], required: true },
+    role: { type: String, enum: ['admin', 'user'], required: true },
     isBlocked: { type: Boolean, default: false, required: true },
-    isActive: { type: Boolean, default: false, required: true },
     photoURL: { type: String, required:true},
   },
   {
     timestamps: true,
     versionKey: false,
-    collection: 'a4-user',
+    collection: 'users',
   },
 );
 signUpSchema.pre('save', async function (next) {
@@ -38,4 +40,4 @@ signUpSchema.statics.isUserExistsByCustomId = async function (email: string) {
   return await Signup.findOne({ email }).select('+password');
 };
 
-export const Signup = model<IUserCreate, TLogin>('a4-user', signUpSchema);
+export const Signup = portfolioDB.model<IUserCreate, TLogin>('users', signUpSchema);

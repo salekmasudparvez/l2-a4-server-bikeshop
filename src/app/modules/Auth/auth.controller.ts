@@ -7,15 +7,15 @@ import config from '../../config';
 
 const signup = catchAsync(async (req: Request, res: Response) => {
   const getDoc = req.body;
-  const payload ={
+ 
+  const payload = {
     ...getDoc,
-    isBlocked:false,
-    isActive:true,
-    role:'customer',
-    photoURL:"https://img.freepik.com/free-vector/illustration-businessman_53876-5856.jpg"
+    isBlocked: false,
+    role: 'user',
+    photoURL:
+      'https://res.cloudinary.com/dncnvqrc6/image/upload/v1740454884/untitled.png',
+  };
 
-  }
-  
   const result = await authService.signupFunc(payload);
   sendResponse(res, {
     success: true,
@@ -29,7 +29,7 @@ const signup = catchAsync(async (req: Request, res: Response) => {
 });
 const login = catchAsync(async (req: Request, res: Response) => {
   const result = await authService.loginFunc(req.body);
-  
+
   const { accessToken, refreshToken } = result;
   res.cookie('refreshToken', refreshToken, {
     secure: config.NODE_ENV === 'production',
@@ -42,12 +42,12 @@ const login = catchAsync(async (req: Request, res: Response) => {
     message: 'User logged in successfully',
     data: {
       accessToken,
-      user:result?.userInfo
+      user: result?.userInfo,
     },
     statusCode: StatusCodes.OK,
   });
 });
-const getAllUsers =catchAsync(async (req: Request, res: Response) => {
+const getAllUsers = catchAsync(async (req: Request, res: Response) => {
   const result = await authService.getAllUsersFunc();
   sendResponse(res, {
     success: true,
@@ -55,9 +55,8 @@ const getAllUsers =catchAsync(async (req: Request, res: Response) => {
     data: result,
     statusCode: StatusCodes.OK,
   });
-})
+});
 const status = catchAsync(async (req: Request, res: Response) => {
-  
   const result = await authService.statusFuc(req?.body);
   sendResponse(res, {
     success: true,
@@ -65,9 +64,8 @@ const status = catchAsync(async (req: Request, res: Response) => {
     data: result,
     statusCode: StatusCodes.OK,
   });
-})
+});
 const updatePassword = catchAsync(async (req: Request, res: Response) => {
-  
   const getUpdateInfo = req.body;
   const result = await authService.updatePasswordFunc(getUpdateInfo);
   sendResponse(res, {
@@ -76,7 +74,7 @@ const updatePassword = catchAsync(async (req: Request, res: Response) => {
     data: result,
     statusCode: StatusCodes.OK,
   });
-})
+});
 const getSingleUser = catchAsync(async (req: Request, res: Response) => {
   const getUserInfo = req.params.email;
   const result = await authService.getSingleUserFunc(getUserInfo);
@@ -87,13 +85,13 @@ const getSingleUser = catchAsync(async (req: Request, res: Response) => {
     statusCode: StatusCodes.OK,
   });
 });
-const updateName= catchAsync(async (req: Request, res: Response) => {
+const updateName = catchAsync(async (req: Request, res: Response) => {
   const getUserInfo = req.body;
 
   const result = await authService.updateNameFunc({
-    name:getUserInfo?.name,
-    email:getUserInfo?.email
-  } );
+    name: getUserInfo?.name,
+    email: getUserInfo?.email,
+  });
   sendResponse(res, {
     success: true,
     message: 'Updated user profile ',
@@ -109,5 +107,5 @@ export const authController = {
   status,
   updatePassword,
   getSingleUser,
-  updateName
+  updateName,
 };

@@ -5,8 +5,8 @@ import express, { Application, Request, Response } from 'express';
 import globalErrorHandler from './app/middlewares/globalErrorhandler';
 import notFound from './app/middlewares/notFound';
 import authRouter from './app/modules/auth/auth.routes';
-import productRouter from './app/modules/product/product.routes';
-import orderRoutes from './app/modules/order/order.routes';
+import projectRouter from './app/modules/project/project.routes';
+import skillRouter from './app/modules/skill/skill.routes';
 
 
 const app: Application = express();
@@ -15,12 +15,13 @@ const app: Application = express();
 app.use(express.json());
 app.use(cookieParser());
 
-app.use(cors({ origin: ['http://localhost:5173','http://localhost:5000','http://localhost:5175','https://gearrush.vercel.app','https://gearrush.netlify.app'], credentials: true }));
+app.use(cors({ origin: ['http://localhost:3000','http://localhost:5000'], credentials: true }));
 
 // application routes
 app.use('/api/auth',authRouter);
-app.use('/api/product',productRouter);
-app.use('/api/order',orderRoutes);
+app.use('/api/project',projectRouter);
+app.use('/api/skill',skillRouter);
+
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Server is running !');

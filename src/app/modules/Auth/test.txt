@@ -1,0 +1,66 @@
+{skillName,skillImageURL
+}
+product api
+ { 
+ pName
+,pDescription
+,pLangueage,
+pFeatures[],
+gitServerSiteURL,
+gitClientSiteURL,
+liveLinkURL:
+}
+Blog related api
+
+{
+bTitile,
+bDescription,
+likeCount,
+commentsCount,
+commentsInfo: [
+        {
+name,
+email,
+photo
+        }
+    ],
+publisherInfo: {
+name,
+email,
+photo
+    }
+timestamp,
+}
+
+Auth
+{
+name,
+email,
+password,
+age,
+isBlocked,
+timestamp,
+photoURL,
+coverURL,
+role
+}
+
+contact
+{
+name,
+email,
+message,
+timestamp
+}
+
+//auth endpoint
+signup:api/auth/signup ,{body:{
+    "name": "Salek Masud Parvez",
+    "email": "admin4953@admin.com",
+    "password": "admin113154"
+}},login:api/auth/login, {
+    body:{
+        name,
+        password
+    }
+}
